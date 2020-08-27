@@ -7,11 +7,13 @@ var engine, world;
 var box1, pig1,pig3;
 var backgroundImg,platform;
 var bird, slingshot;
+var bg = "sprites/bg.png" ; 
+var score = 0 ;
 
 var gameState = "onSling";
 
 function preload() {
-    backgroundImg = loadImage("sprites/bg.png");
+    getBackground();
 }
 
 function setup(){
@@ -42,10 +44,19 @@ function setup(){
 
     //log6 = new Log(230,180,80, PI/2);
     slingshot = new SlingShot(bird.body,{x:200, y:50});
+
+    console.log(box1.body);
+    //getTime();
 }
 
 function draw(){
+   if(backgroundImg){
     background(backgroundImg);
+   }
+   fill("white");
+   textSize(35);
+   text("Score : " + score , width - 300 , 50);
+   
     Engine.update(engine);
     //strokeWeight(4);
     box1.display();
@@ -53,10 +64,12 @@ function draw(){
     ground.display();
     pig1.display();
     log1.display();
+    pig1.score();
 
     box3.display();
     box4.display();
     pig3.display();
+    pig3.score();
     log3.display();
 
     box5.display();
@@ -86,3 +99,45 @@ function keyPressed(){
        // slingshot.attach(bird.body);
     }
 }
+
+async function getBackground(){
+    var response = await fetch("http://worldtimeapi.org/api/timezone/Asia/Kolkata");
+    var responseJSON = await response.json(); //extracts the data in JSON format
+
+    var dt = responseJSON.datetime;
+    console.log(dt);   
+
+    var hour = dt.slice(11,13);
+    console.log(hour);
+
+    if(hour >= 06 && hour <= 18){
+        bg = "sprites/bg.png" ;
+    }
+    else{
+        bg = "sprites/bg2.jpg" ; 
+    }
+
+    backgroundImg =loadImage(bg);
+    
+}
+
+/*
+API call
+-Application Program Interface
+-Promise of information - takes a little while to respond
+-fetch() - sends a request to the API service & collects the response
+-JS runs the code synchronously - executes one line after the other (will not wait for "fetch API call" to be completed before jumping to the next line)
+-await - tell the computer to wait for the API call to be completed before jumping to the next line
+-Asynchronous functions - wait for some lines to be completed before jumping to the next
+
+-slice()
+
+JSON - data structure
+JavaScript Object Notation
+-created inside {..}
+-Elements are separated by a comma
+-Elements - Index name
+{Index_name: Index_value, ...}
+
+
+*/
